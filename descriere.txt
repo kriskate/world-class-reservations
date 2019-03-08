@@ -1,0 +1,37 @@
+Buna ziua,
+
+
+Din dorinta de a putea filtra mai bine clasele de curs, am inceput sa scriu o extensie de chrome care sa ma ajute in acest sens.
+
+Extensia are urmatoarele caractere:
+- uz propriu (sau de catre prieteni)
+- scrie un nod HTML nou in site, doar pe browserul celui care instaleaza iar apoi activeaza extensia, nod ce contine noile filtre si cursurile; va fi practic un overlay peste site, care nu afecteaza cu nimic functionarea site-ului; va contine si un buton de inchidere
+- nu extrage nicio informatie cu caracter personal a utilizatorului
+- salveaza un cookie (sau in localStorage) pentru a retine filtrele (interne) selectate anterior
+- toata actiunea extensiei se petrece in browser, numai pe site-ul members.worldclass.ro si nu afecteaza cu nimic integritatea si structura site-ului sau a datelor continute de acesta
+- va avea acces numai la datele la care le are si utilizatorul in mod normal, doar dispunerea lor va fi putin diferita
+- nu are un scop comercial, nu voi fi remunerat pentru ea. E doar pentru a-mi facilita mie (si a catorva prieteni cu care am vorbit despre filtrele acestea) rezervarea de cursuri
+- singurul mod de comunicare cu serverele Worldclass al extensiei va fi ca al unui utilizator normal, singurele date accesate de aceasta fiind raspunsurile venite de la server prin intermediul endpoint-ului https://members.worldclass.ro/member-schedule.php
+
+Avantaje:
+- utilizatorul nu va mai fi nevoit sa selecteze fiecare club in parte pentru a vedea la ce cursuri poate face rezervare
+- utilizatorul poate filtra cursurile dupa: club, ora de desfasurare, antrenori, numele cursului, tipul studio-ului in care se desfasoara cursul
+- simplu de activat si dezactivat
+- lasa site-ul si datele continute de acesta intacte
+
+Dezavantaje:
+- nu poate functiona pe alt site in afara subdomeniului members.worldclass.ro
+- intrucat raspunsurile de la server sunt in format HTML, singura optiune de a putea obtine cursurile la care utilizatorul are acces este de a simula selectarea fiecarui club de catre utilizator; practic, actiune care s-a desfasura la o navigare "normala" in cateva minute, acum s-ar desfasura in cateva secunde, deci serverul va trimite datele intr-un ritm mai "alert", doar la prima accesare a extensiei, nu si pe parcursul utilizarii ei
+- nu poate fi folosita pe device-uri mobile (dar exista o potentiala solutie si pentru asta)
+
+
+Motivul acestui e-mail: as dori acordul dumneavoastra pentru lansarea extensiei pe https://chrome.google.com/webstore/.
+Am citit in sectiunea http://www.worldclass.ro/termeni-si-conditii/ (6-Copyright), urmatoarele:
+"[...] Website-ul, materialele de pe website sau cele accesibile prin acesta şi Drepturile asupra Proprietăţii Intelectuale inerente nu pot fi copiate, distribuite, publicate, licenţiate, folosite sau reproduse în niciun fel (în afară de măsura strict necesară pentru şi cu scopul legat de accesarea şi utilizarea acestui website)."
+Motivarea extensiei este legata de facilitarea utilizarii acestui site, in sectiunea de rezervari cursuri, fara a distribui, copia sau publica datele din site.
+
+
+Daca doriti sa vedeti un prototip functional, va prezint codul acestuia in totalitate.
+
+Cu stima,
+Cristian Stanescu

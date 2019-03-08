@@ -1,0 +1,11 @@
+  {
+    "name": "World Class Rezervari ENHANCED",
+    "description": "Rezerva mai usor!",
+    "version": "1.0",
+    "manifest_version": 2,
+    "content_scripts": [{
+        "js": ["main.js"],
+        "matches": ["https://members.worldclass.ro/member-schedule.php"]
+    }],
+    "web_accessible_resources": ["wc-extension.js"]
+}
