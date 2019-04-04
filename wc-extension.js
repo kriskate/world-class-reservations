@@ -463,57 +463,66 @@ const loading = (show=true) => {
 }
 
 
+
+/* INIT */
+
 const startApp = async () => {
   if(window.location.href !== 'https://members.worldclass.ro/member-schedule.php') {
-    alert(errors.wrongURL)
-    return
+    alert(errors.wrongURL);
+    return;
   }
 
-  show()
+  show();
 
-
-  if(generated) return
+  if(generated) return;
 
   generateApp()
   waitEl = modalBody.querySelector('#wait')
 
-  populateClubs()
-  await generateFilters()
-
-
-  //try{
-  //  await getAllSchedules()
-  //} catch (e) {
-  //  alert(`${errors.serverErr}
-  //  Eroare: ${e}`)
-  //}
-  
-  // console.log('clubs', clubs)
-  // console.log('filters', filter_values, filters_active)
+  populateClubs();
+  await generateFilters();
 }
 
 
-const appBtn = document.createElement("DIV")
-appBtn.innerHTML = `
+const appBtnWrapper = document.createElement("DIV")
+appBtnWrapper.innerHTML = `
   <style scoped>
-    .app-btn {
+    #app-btn-wrapper {
       position: absolute;
       top: 70px;
       left: 200px;
     }
     @media (max-width: 767px) {
-      .app-btn {
+      #app-btn-wrapper {
         top: 58px;
         left: 15px;
       }
     }
   </style>
-  <button class="btn btn-book-class app-btn">Rezervări ENHANCED</button>
+  <div id="app-btn-wrapper">
+    <button id="app-btn" class="btn btn-book-class">Rezervări ENHANCED</button>
+    <br/>
+    <label for="autostart">Auto Start</label>
+    <input id="autostart" type="checkbox"></input>
+  </div>
 `
-appBtn.onclick = startApp
-document.body.appendChild(appBtn)
+appBtnWrapper.querySelector('#app-btn').onclick = startApp;
+appBtnWrapper.querySelector('#autostart').checked = localStorage.getItem("WCAUTOSTART") == "true"
+appBtnWrapper.querySelector('#autostart').onchange = e => localStorage.setItem("WCAUTOSTART", e.target.checked)
+document.body.appendChild(appBtnWrapper);
 
-//startApp()
+if(localStorage.getItem("WCAUTOSTART") == "true") {
+  setTimeout(startApp, 0);
+}
+
+/* end INIT */
+
+
+
+
+
+
+
 
 
 
