@@ -7,5 +7,9 @@
         "js": ["main.js"],
         "matches": ["https://members.worldclass.ro/member-schedule.php"]
     }],
+
+    "icons": {
+     "128": "icon128.png"
+    },
     "web_accessible_resources": ["wc-extension.js"]
 }
