@@ -1,12 +1,28 @@
   {
-    "name": "World Class Rezervari ENHANCED",
+    "name": "World Class Rezervari +",
     "description": "Rezerva mai usor!",
-    "version": "1.0",
+    "version": "1.1",
     "manifest_version": 2,
     "content_scripts": [{
         "js": ["main.js"],
         "matches": ["https://members.worldclass.ro/member-schedule.php"]
     }],
+
+    "externally_connectable": {
+      "matches": ["https://members.worldclass.ro/member-schedule.php"]
+    },
+    "permissions": [
+        "tabs",
+        "alarms"
+    ],
+
+
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0yICGb5WsdhMlRFr9QZENOVQXgBi7cS73Nf7EWSi2+iRNwRBhEXXi3yvcey0WTK3tRpq5M0Ax5lv1WGICPiajMmwkFnlbhvCYRTm07gaL1bz4f02ia6yu7XpGUU7B9sVEFQISocipZN6MIMoHk4Uf7Zb9hm/19jqLLVe9Ku/8Dsfz7xoQV06bBkJPowNt4SNuiad3xYdO5JkV1+Xg1w8EYxn3pLTJsFsKD+QvSLA6T7HguBllrLczh2mco3wTEu39yXbuAWiSGz7yd3wUUK+3QMRVGZh0INo5ifHGkHOYp+XTXz7Jlsp+Uvc/GsLUsbKzEmb3HVdZ0YVL8cDD01jsQIDAQAB",
+
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": true
+    },
 
     "icons": {
      "128": "icon128.png"

@@ -38,13 +38,42 @@ const generateApp = () => {
           opacity: 0.3; 
           background-color: darkblue;
         }
+
+
+        #app-body .club-logo {
+          display: inline-block;
+          width: 100%;
+          color: white;
+          font-weight: bold;
+          font-size: 11px;
+          padding: 3px;
+          text-align: center;
+          margin-bottom: 7px;
+        }
+
+        #app-body .reminder {
+          background-color: mediumseagreen;
+          position: absolute;
+          right: 6px;
+          top: 30px;
+          width: 60px;
+          height: 27px;
+          line-height: 2;
+          font-size: 11px;
+          text-align: center;
+          user-select: none;
+          z-index: 99;
+        }
+        #app-body .reminder:hover {
+          background-color: #5bc0de;
+        }
       </style>
 
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" aria-label="Închide"><span aria-hidden="true">×</span></button>
-            <h3>Rezervări ENHANCED</h3>
+            <h3>Rezervări +</h3>
           </div>
           <div class="modal-body">
             <div id="wait">Se încarcă datele, așteaptă puțin...</div>
@@ -104,7 +133,7 @@ const colorsRaw = {
   l800_4: "#D84315 #4E342E #424242 #37474F",
   l400_1: "#EF5350 #EC407A #AB47BC #7E57C2 #5C6BC0 #FFA726",
 }
-const clubColors = colorsRaw.l800_1.split(" ").concat(colorsRaw.l800_2.split(' ')).concat(colorsRaw.l800_3.split(' ')).concat(colorsRaw.l800_4.split(' ')).concat(colorsRaw.l400_1.split(' '))
+const clubColors = [].concat.apply([], Object.keys(colorsRaw).map(colors => colorsRaw[colors].split(' ')));
 
 
 /* ---- CLUB DATA ---- 
@@ -177,35 +206,47 @@ const getScheduleForClub = async (clubname, club, group=-1) => {
       //modal.querySelector('.btn-book-class').setAttribute('target', '_blank')
       //modal.querySelector('.btn-book-class').setAttribute('data-dismiss', 'modal')
     })
+
+    const dayEl = el_schedule.querySelector('.schedule-day')
+    let day = dayEl.innerHTML.replace(/<(.*)>/g, '');
+    let weekDay = dayEl.querySelector('strong').innerText;
+    day = weekDay + ', ' + day;
+
     return {
-      name: el_schedule.querySelector('.schedule-day').innerHTML,
-      classes: [...el_schedule.querySelectorAll('.schedule-class')].map(el_class => getClass(el_class, clubname, club.color)),
+      name: dayEl.innerHTML,
+      classes: [...el_schedule.querySelectorAll('.schedule-class')].map(el_class => getClass(el_class, clubname, club.color, day)),
       modals
     }
   })
 }
-const getClass = (el_class, clubname, clubcolor) => {
+const getClass = (el_class, clubname, clubcolor, day) => {
+  const club = `${clubname.replace("World Class ", "")}`;
+  const hours = el_class.querySelector('.class-hours').innerHTML;
+  const title = el_class.querySelector('.class-title').innerHTML;
+
   const club_logo = document.createElement("DIV")
   club_logo.className = 'label club-logo'
-  club_logo.setAttribute('style', `
-    display: inline-block;
-    width: 100%;
-    color: white;
-    background-color: ${clubcolor};
-    font-weight: bold;
-    font-size: 11px;
-    padding: 3px;
-    text-align: center;
-    margin-bottom: 7px;
-  `)
-  club_logo.innerHTML = `${clubname.replace("World Class ", "")}`
+  club_logo.setAttribute('style', `background-color: ${clubcolor};`)
+  const reminder = document.createElement("DIV")
+  reminder.className = 'label reminder'
+  reminder.innerHTML = `reminder`
+  reminder.onclick = function () {
+    $(this).remove()
+    
+    createAlarm(title, hours, day, club);
+  }
+  if(canHaveReminder(day, hours)) {
+    el_class.insertBefore(reminder, el_class.firstChild)
+  }
+
+  club_logo.innerHTML = club;
   el_class.insertBefore(club_logo, el_class.firstChild)
   el_class.setAttribute('style', 'flex-flow: wrap; text-align: left;')
 
   return {
     el: el_class,
-    hours: el_class.querySelector('.class-hours').innerHTML,
-    title: el_class.querySelector('.class-title').innerHTML,
+    hours,
+    title,
     trainers: el_class.querySelector('.trainers').innerHTML,
     room: el_class.querySelector('.room').innerHTML,
   }
@@ -272,7 +313,8 @@ const filterStyles = `
     }
   </style>
 `
-const filters_generateFilter = ({ options=[], optionColors=[], title, id, style='btn-default', search=false, label=false, actions=true }) =>`
+const filters_generateFilter = ({ options=[], optionColors=[], title, id, style='btn-default', search=false, label=false, actions=true }) => {
+  return `
   <div class="filter-type">
     <span style="width: 55px; display: inline-block;">${title}:</span>
     <select class="selectpicker show-tick" data-width="240px"
@@ -282,7 +324,8 @@ const filters_generateFilter = ({ options=[], optionColors=[], title, id, style=
       ${options.map((option, idx) => `<option ${label ? `data-content="<span class='label' style='background-color: ${optionColors[idx]};'>${option}</span>"` : ''}>${option}</option>)`)}
     </select>
   </div>
-`
+  `
+}
 
 const filters_change = async (e) => {
   const val = $(e.target).val() || []
@@ -296,10 +339,11 @@ const filters_change = async (e) => {
   localStorage.setItem('WCFILTER', JSON.stringify(filters_active))
 }
 
-const showModals = (modals, li, show=true) => 
+const showModals = (modals, li, show=true) => {
   modals.forEach(modal => 
     show ? li.appendChild(modal) : modal.parentNode ? modal.parentNode.removeChild(modal) : ''
   )
+}
 // check all class els for their visibility
 const filters_showClasses = () => {
 
@@ -500,7 +544,7 @@ appBtnWrapper.innerHTML = `
     }
   </style>
   <div id="app-btn-wrapper">
-    <button id="app-btn" class="btn btn-book-class">Rezervări ENHANCED</button>
+    <button id="app-btn" class="btn btn-book-class">Rezervări +</button>
     <br/>
     <label for="autostart">Auto Start</label>
     <input id="autostart" type="checkbox"></input>
@@ -518,6 +562,75 @@ if(localStorage.getItem("WCAUTOSTART") == "true") {
 /* end INIT */
 
 
+
+
+
+
+/* ALARMS */
+const URL_members = 'https://members.worldclass.ro/member-schedule.php'
+const appID = 'jgpannigbebfkkbhncfiapijbldjopco';
+
+
+
+const canHaveReminder = (zi, ora) => {
+  let can = generateTimestamp(zi, ora) > new Date().getTime();
+  return can;
+}
+
+const generateTimestamp = (day, hours) => {
+  const year = new Date().getFullYear();
+  day = day.split(',')[1];
+  hours = hours.split('-')[0];
+  
+  const date = new Date(`${day} ${year} ${hours}`);
+  date.setHours(date.getHours()-26);
+  date.setMinutes(date.getMinutes()-1);
+
+  return date;
+}
+
+const getReminders = async () => await chrome.runtime.sendMessage(
+  appID, { type: "ALARM_GET_ALL" },
+  response => {
+    const alarms = response.map(({ name, scheduledTime }) => `\r\n${name}`);
+    alert(alarms);
+  }
+);
+
+const createAlarm = async(curs, ora, zi, club) => {
+  // await getReminders();
+
+  // const timestamp = mockTimestamp();
+  const timestamp = generateTimestamp(zi, ora);
+
+  chrome.runtime.sendMessage(appID, {
+    type: "ALARM_CREATE",
+    ora,
+    curs,
+    club,
+    zi,
+    url: URL_members,
+    timestamp,
+  }, (response) => {
+    if(response.ok) {
+      alert(`Reminder pentru 
+      ${zi}
+      ${ora}
+      ${curs}
+      la ${club}
+setat: ${timestamp.toLocaleString()}`)
+    }
+  });
+}
+
+const mockTimestamp = () => {
+  const nd = new Date();
+  nd.setSeconds(nd.getSeconds() + 5);
+
+  return nd;
+}
+
+/* end ALARMS */
 
 
 
