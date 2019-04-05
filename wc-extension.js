@@ -67,6 +67,10 @@ const generateApp = () => {
         #app-body .reminder:hover {
           background-color: #5bc0de;
         }
+        #reminders {
+          position: inherit!important;
+          padding: 8px;
+        }
       </style>
 
       <div class="modal-dialog">
@@ -74,6 +78,7 @@ const generateApp = () => {
           <div class="modal-header">
             <button type="button" class="close" aria-label="Închide"><span aria-hidden="true">×</span></button>
             <h3>Rezervări +</h3>
+            <div id="reminders" class="label reminder">Vezi reminders</div>
           </div>
           <div class="modal-body">
             <div id="wait">Se încarcă datele, așteaptă puțin...</div>
@@ -91,6 +96,7 @@ const generateApp = () => {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
   `
 
+  App.querySelector('#reminders').onclick = getReminders;
   App.querySelector('.close').onclick = hide
   App.querySelector('.btn-iesi').onclick = hide
   document.body.querySelector('.container').appendChild(App)
