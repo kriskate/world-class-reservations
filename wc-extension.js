@@ -576,6 +576,20 @@ if(localStorage.getItem("WCAUTOSTART") == "true") {
 const URL_members = 'https://members.worldclass.ro/member-schedule.php'
 const appID = 'jgpannigbebfkkbhncfiapijbldjopco';
 
+const monthToEn = {
+  'Ianuarie': 'January',
+  'Februarie': 'February',
+  'Martie': 'March',
+  'Aprilie': 'April',
+  'Mai': 'May',
+  'Iunie': 'June',
+  'Iulie': 'July',
+  'August': 'August',
+  'Septembrie': 'September',
+  'Octombrie': 'October',
+  'Noiembrie': 'November',
+  'Decembrie': 'December',
+}
 
 
 const canHaveReminder = (zi, ora) => {
@@ -586,8 +600,10 @@ const canHaveReminder = (zi, ora) => {
 const generateTimestamp = (day, hours) => {
   const year = new Date().getFullYear();
   day = day.split(',')[1];
+  Object.keys(monthToEn).forEach(m => day = day.replace(m, monthToEn[m]));
   hours = hours.split('-')[0];
-  
+
+  // console.log(day, year, hours)
   const date = new Date(`${day} ${year} ${hours}`);
   date.setHours(date.getHours()-26);
   date.setMinutes(date.getMinutes()-1);
